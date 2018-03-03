@@ -10,10 +10,12 @@
     <context:property-placeholder location="classpath:application.properties"/>
 
     <!-- Support REST requests -->
-    <bean id="resource" class="org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails">
+    <bean id="resource" class="org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordResourceDetails">
         <property name="accessTokenUri" value="${resourceServer.accessTokenUri}"/>
         <property name="clientId" value="${resourceServer.clientId}"/>
         <property name="clientSecret" value="${resourceServer.clientSecret}"/>
+        <property name="username" value="${resourceServer.username}"/>
+        <property name="password" value="${resourceServer.password}"/>
     </bean>
 
     <bean id="accessTokenRequest" class="org.springframework.security.oauth2.client.token.DefaultAccessTokenRequest"/>

@@ -5,34 +5,26 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.DefaultOAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.token.AccessTokenRequest;
 import org.springframework.security.oauth2.client.token.DefaultAccessTokenRequest;
-import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
+import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordResourceDetails;
 
 @SpringBootApplication
-@Configuration
-public class ClientApplication extends WebSecurityConfigurerAdapter {
+public class ClientApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ClientApplication.class, args);
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .antMatchers("/")
-                .permitAll();
-    }
-
     @Bean
     @ConfigurationProperties("resourceServer")
-    public ClientCredentialsResourceDetails getClientCredentialsResourceDetails() {
-        return new ClientCredentialsResourceDetails();
+    public ResourceOwnerPasswordResourceDetails resourceDetails() {
+        return new ResourceOwnerPasswordResourceDetails();
     }
 
     @Bean
@@ -43,6 +35,16 @@ public class ClientApplication extends WebSecurityConfigurerAdapter {
 
     @Bean
     public OAuth2RestTemplate restTemplate() {
-        return new OAuth2RestTemplate(getClientCredentialsResourceDetails(), oAuth2ClientContext());
+        return new OAuth2RestTemplate(resourceDetails(), oAuth2ClientContext());
+    }
+
+    @Configuration
+    @EnableWebSecurity
+    protected static class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+        @Override
+        public void configure(WebSecurity web) throws Exception {
+            web.ignoring().antMatchers("/**");
+        }
     }
 }

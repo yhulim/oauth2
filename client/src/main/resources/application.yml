@@ -10,3 +10,5 @@ resourceServer:
  accessTokenUri: http://localhost:8081/oauth/token
  clientId: client_id
  clientSecret: client_secret
+ username: username
+ password: password
