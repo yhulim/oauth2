@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+    <!-- Add property file support -->
+    <context:property-placeholder location="classpath:application.properties"/>
+
+    <!-- Support REST requests -->
+    <bean id="resource" class="org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails">
+        <property name="accessTokenUri" value="${resourceServer.accessTokenUri}"/>
+        <property name="clientId" value="${resourceServer.clientId}"/>
+        <property name="clientSecret" value="${resourceServer.clientSecret}"/>
+    </bean>
+
+    <bean id="accessTokenRequest" class="org.springframework.security.oauth2.client.token.DefaultAccessTokenRequest"/>
+
+    <bean id="context" class="org.springframework.security.oauth2.client.DefaultOAuth2ClientContext">
+        <constructor-arg name="accessTokenRequest" ref="accessTokenRequest"/>
+    </bean>
+
+    <bean id="restTemplate" class="org.springframework.security.oauth2.client.OAuth2RestTemplate">
+        <constructor-arg name="resource" ref="resource"/>
+        <constructor-arg name="context" ref="context"/>
+    </bean>
+
+    <!-- Custom REST client -->
+    <bean id="restClient" class="gys.examples.oauth2.clientxml.RestClient">
+        <constructor-arg name="url" value="${resourceServer.url}"/>
+        <constructor-arg name="restTemplate" ref="restTemplate"/>
+    </bean>
+
+</beans>

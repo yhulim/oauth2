@@ -1,0 +1,12 @@
+server:
+ port: 8082
+
+spring:
+ aop:
+   proxy-target-class: true
+
+resourceServer:
+ url: http://localhost:8081
+ accessTokenUri: http://localhost:8081/oauth/token
+ clientId: client_id
+ clientSecret: client_secret
